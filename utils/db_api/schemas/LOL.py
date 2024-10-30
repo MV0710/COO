@@ -3,9 +3,9 @@ from sqlalchemy import Column, String, Integer, Text, sql, DateTime, BigInteger,
 
 
 class LOL(TimeBaseModel):
-    __tablename__ = 'Alerts'
-    user_id = Column(BigInteger, primary_key=True)
-    corpus = Column(String(255), primary_key=True)
-    status = Column(Boolean, nullable=False)
+    __tablename__ = 'LOL'
+    id = Column(BigInteger, primary_key=True)
+    name = Column(String(255), primary_key=True)
+    email = Column(String(255), primary_key=True)
 
     query: sql.Select

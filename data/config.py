@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BOT_TOKEN = str('7005747716:AAGSXFV8lprU_KRZ58GjQYxx-vEScU0ZX9k')
+BOT_TOKEN = str('6416706304:AAHwOPIZ7-hB_9ahLiS99KwT5W9I-Q70ggk')
 super_admins=[
     586619481,
     487868221,
@@ -20,8 +20,7 @@ admins = [
     1115993235,
     537683865,
     764093692,
-    1818324478,
-    1469224518
+    1818324478
 ]
 time_zone = 1
 

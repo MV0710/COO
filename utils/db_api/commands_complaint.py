@@ -4,10 +4,10 @@ from utils.db_api.tables.complaint import Complaint
 from datetime import datetime
 
 
-async def add_complaint(user_id: int, user_name: str, date_time: datetime, corpus: str, floor: str, block: str = None,
+async def add_complaint(num_id: int, user_id: int, user_name: str, date_time: datetime, corpus: str, floor: str, block: str = None,
         room: str = None, motive: str = 'Другое', comment: str = None, status: str = 'Не обработано', nickname: str = ' '):
     try:
-        complaint = Complaint(user_id=user_id, user_name=user_name, date_time=date_time, corpus=corpus, floor=floor,
+        complaint = Complaint(id=num_id, user_id=user_id, user_name=user_name, date_time=date_time, corpus=corpus, floor=floor,
                                      block=block, room=room, motive=motive, comment=comment, status=status, nickname=nickname)
         await complaint.create()
     except Exception as ex:
@@ -20,6 +20,20 @@ async def add_complaint(user_id: int, user_name: str, date_time: datetime, corpu
                                                        f"status={status}, nickname={nickname}\n"
                                                        f"EXCEPTION: {ex}")
 
+async def show_id():
+    try:
+        show = await Complaint.query.gino.all()
+        A = []
+        for complaint in show:
+            A.append(complaint.id)
+        A = sorted(A)
+        true_id=A[len(A)-1]
+        return true_id
+    except Exception as ex:
+        await bot.send_message(chat_id=586619481, text="ERROR\n"
+                                                    "FUNC: show_id\n"
+                                                    f"EXCEPTION: {ex}")
+        return []
 
 async def select_all_complaints():
     try:

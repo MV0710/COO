@@ -103,21 +103,40 @@ async def f_living(message: types.Message, state: FSMContext):
     elif text in ['Да', 'Нет']:
         async with state.proxy() as data:
             data['living'] = text
-        await message.answer(text='Ваше гражданство РФ?', reply_markup=yes_no_markup)
-        await Joining.nationality.set()
+        await message.answer(text='Введите дату рождения', reply_markup=cansel_markup)
+        await Joining.birthday.set()
 
     else:
         await message.answer(text="Выберите 'Да' или 'Нет' ⬇️", reply_markup=yes_no_markup)
 
-
-@dp.message_handler(state=Joining.nationality)
-async def f_nationality(message: types.Message, state: FSMContext):
+@dp.message_handler(state=Joining.birthday)
+async def f_birthday(message: types.Message, state: FSMContext):
     text = message.text
 
     if text == 'Назад':
         await message.answer(text='Проживаете ли вы в общежитии?',
                              reply_markup=yes_no_markup)
         await Joining.living.set()
+
+    elif text == 'Отмена':
+        await message.answer(text='Выберите действие ⬇️', reply_markup=start_markup)
+        await state.finish()
+        await Starting.choose.set()
+
+    else:
+        async with state.proxy() as data:
+            data['birthday'] = text
+        await message.answer(text='Ваше гражданство РФ?', reply_markup=yes_no_markup)
+        await Joining.nationality.set()
+
+@dp.message_handler(state=Joining.nationality)
+async def f_nationality(message: types.Message, state: FSMContext):
+    text = message.text
+
+    if text == 'Назад':
+        await message.answer(text='Введите дату рождения',
+                             reply_markup=cansel_markup)
+        await Joining.birthday.set()
 
     elif text == 'Отмена':
         await message.answer(text='Выберите действие ⬇️', reply_markup=start_markup)
@@ -157,6 +176,7 @@ async def f_link(message: types.Message, state: FSMContext):
                                   f"<i>Факультет:</i> <b>{data.get('faculty')}</b>\n"
                                   f"<i>Курс обучения:</i> <b>{data.get('year')}</b>\n"
                                   f"<i>Средний балл:</i> <b>{data.get('score')}</b>\n"
+                                  f"<i>Дата рождения:</i> <b>{data.get('birthday')}</b>\n"
                                   f"<i>Проживаете ли в общежитии:</i> <b>{data.get('living')}</b>\n"
                                   f"<i>Гражданство РФ:</i> <b>{data.get('nationality')}</b>\n"
                                   f"<i>Ссылка на VK:</i> <b>{data.get('link')}</b>",
@@ -193,6 +213,7 @@ async def f_confirm(message: types.Message, state: FSMContext):
                                         f"Факультет: {data.get('faculty')}\n"
                                         f"Курс обучения: {data.get('year')}\n"
                                         f"Средний балл: {data.get('score')}\n"
+                                        f"<i>Дата рождения:</i> <b>{data.get('birthday')}</b>\n"
                                         f"Проживает ли в общежитии: {data.get('living')}\n"
                                         f"Гражданство РФ: {data.get('nationality')}\n"
                                         f"Ссылка на VK: {data.get('link')}")
@@ -203,6 +224,7 @@ async def f_confirm(message: types.Message, state: FSMContext):
                                         f"Факультет: {data.get('faculty')}\n"
                                         f"Курс обучения: {data.get('year')}\n"
                                         f"Средний балл: {data.get('score')}\n"
+                                        f"<i>Дата рождения:</i> <b>{data.get('birthday')}</b>\n"
                                         f"Проживает ли в общежитии: {data.get('living')}\n"
                                         f"Гражданство РФ: {data.get('nationality')}\n"
                                         f"Ссылка на VK: {data.get('link')}")
@@ -214,6 +236,7 @@ async def f_confirm(message: types.Message, state: FSMContext):
                                         f"Факультет: {data.get('faculty')}\n"
                                         f"Курс обучения: {data.get('year')}\n"
                                         f"Средний балл: {data.get('score')}\n"
+                                        f"<i>Дата рождения:</i> <b>{data.get('birthday')}</b>\n"
                                         f"Проживает ли в общежитии: {data.get('living')}\n"
                                         f"Гражданство РФ: {data.get('nationality')}\n"
                                         f"Ссылка на VK: {data.get('link')}")

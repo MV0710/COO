@@ -8,7 +8,7 @@ from loader import dp
 
 @dp.message_handler(text='Правила пользования', state=Starting.choose)
 async def f_rules(message: types.Message):
-    await message.answer(text="<b>Правила пользование ботом</b>\n\n"
+    await message.answer(text="<b>Правила пользования ботом</b>\n\n"
                               "▪️Для подачи жалоб необходимо корректно пройти регистрацию.\n\n"
                               "▪️Жалобы можно отправлять не чаще 1 раза в 30 минут.\n\n"
                               "▪️При подаче фейковых жалоб ваш аккаунт будет заблокирован.\n"

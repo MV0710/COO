@@ -10,10 +10,9 @@ from utils.misc import rate_limit
 @rate_limit(limit=10, key='Документация')
 @dp.message_handler(text='Документация', state=Starting.choose)
 async def f_docs(message: types.Message):
-    await bot.send_document(chat_id=message.from_user.id,
-                            document='C:/Users/Maks/Downloads/Telegram Desktop/Правила_внутреннего_распорядка_обучающихся.pdf')
-    await bot.send_document(chat_id=message.from_user.id,
-                            document='BQACAgIAAxkBAAMRY_CU4t-r7k3_TRPNOOOyOQ2IGy8AAiEhAAIG_YlL-no1jGPkXLEuBA')
-    await bot.send_document(chat_id=message.from_user.id,
-                            document='BQACAgIAAxkBAAMTY_CU9G86DhsoovVf5KxH9B1YH-4AAiIhAAIG_YlLScPvy80AAe7OLgQ',
-                            reply_markup=start_markup)
+    f1 = open('Правила_внутреннего_распорядка_обучающихся.pdf', 'rb')
+    f2 = open('Устав Университета.pdf', 'rb')
+    f3 = open('Правила_проживания_в_студенческом_городке.pdf', 'rb')
+    await bot.send_document(chat_id=message.from_user.id, document=f1)
+    await bot.send_document(chat_id=message.from_user.id, document=f2) 
+    await bot.send_document(chat_id=message.from_user.id, document=f3, reply_markup=start_markup)

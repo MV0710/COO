@@ -140,7 +140,8 @@ async def confirm_f(message: types.Message, state: FSMContext):
         except:
             await message.answer(text='Пользователь остановил бота')
         else:
-            await commands_mg.add_mg(admin_id, complaint_id, date_time, text)
+            num_id = await commands_mg.show_id() + 1
+            await commands_mg.add_mg(num_id, admin_id, complaint_id, date_time, text)
             await message.answer(text='Сообщение отправлено', reply_markup=start_markup)
 
         await state.finish()

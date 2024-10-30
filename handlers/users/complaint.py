@@ -1,12 +1,11 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from data.config import admins, time_zone
+from data.config import admins, time_zone, super_admins
 from keyboards.default import corpus_markup, floor_15_markup, floor_16_markup, start_markup, create_block, create_room,\
     motive_markup, comment_markup, confirm_markup
 from loader import dp, bot
 from states import Position, Starting
-
 from utils.db_api import commands_complaint, commands_alert, commands_user
 
 from datetime import datetime, timedelta
@@ -21,12 +20,12 @@ async def enter_start(message: types.Message):
     elif user.blocking == 1:
         await message.answer(text='Вы были заподозрены в подаче фейковых жалоб. Для разблокировки аккаута обратитесь к руководству СОО.')
     else:
-        #last_complaints = await commands_complaint.select_complaints_user(user_id=user_id)
-        #if last_complaints:
-            #if datetime.now() + timedelta(hours=time_zone) < last_complaints[0].date_time + timedelta(minutes=30):
-                #await message.answer(text='Жалобы можно отправлять не чаще 1 раза в 30 минут.\n'
-                                          #'Пожалуйста, подождите.')
-                #return 0
+        last_complaints = await commands_complaint.select_complaints_user(user_id=user_id)
+        if last_complaints and user_id not in super_admins:
+            if datetime.now() + timedelta(hours=time_zone) < last_complaints[0].date_time + timedelta(minutes=30):
+               await message.answer(text='Жалобы можно отправлять не чаще 1 раза в 30 минут.\n'
+                                         'Пожалуйста, подождите.')
+               return 0
 
         await message.answer(text='Укажите корпус, в котором замечено нарушение', reply_markup=corpus_markup)
         await Position.corpus.set()
@@ -274,13 +273,14 @@ async def enter_confirm(message: types.Message, state: FSMContext):
 
     elif text == 'Отправить жалобу':
         dt = datetime.now() + timedelta(hours=time_zone)
+        num_id = await commands_complaint.show_id() + 1
         if block == 'Этаж':
             answer_text = f'<i>Пользователь:</i> <b>{user_name} (@{nickname}, <code>{user_id}</code>)</b>\n' \
                           f'<i>Корпус:</i> <b>{corpus}</b>\n' \
                           f'<i>Этаж:</i> <b>{floor}</b>\n' \
                           f'<i>Нарушение:</i> <b>{motive}</b>\n' \
                           f'<i>Комментарий:</i> <b>{comment[:min(len(comment), 200)]}</b>'
-            await commands_complaint.add_complaint(user_id=user_id, user_name=user_name, date_time=dt,
+            await commands_complaint.add_complaint(num_id=num_id, user_id=user_id, user_name=user_name, date_time=dt,
                                                    corpus=corpus, floor=floor,
                                                    block=block, room=None, motive=motive,
                                                    comment=comment[:min(len(comment), 200)],
@@ -291,7 +291,7 @@ async def enter_confirm(message: types.Message, state: FSMContext):
                           f'<i>Блок:</i> <b>{room}</b>\n' \
                           f'<i>Нарушение:</i> <b>{motive}</b>\n' \
                           f'<i>Комментарий:</i> <b>{comment[:min(len(comment), 200)]}</b>'
-            await commands_complaint.add_complaint(user_id=user_id, user_name=user_name, date_time=dt,
+            await commands_complaint.add_complaint(num_id=num_id, user_id=user_id, user_name=user_name, date_time=dt,
                                                    corpus=corpus, floor=floor,
                                                    block=block, room=room, motive=motive,
                                                    comment=comment[:min(len(comment), 200)],

@@ -9,3 +9,4 @@ class Joining(StatesGroup):
     nationality = State()
     link = State()
     confirm = State()
+    birthday = State()

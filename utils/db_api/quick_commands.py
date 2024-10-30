@@ -11,5 +11,5 @@ async def add_user(id: int, name: str, email: str =None):
         pass
 
 async def update_user_email(id, email):
-    user = await  LOL.get(id)
+    user = await LOL.get(id)
     await user.update(email=email).apply()

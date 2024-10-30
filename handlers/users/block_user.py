@@ -76,8 +76,9 @@ async def f_user_notfound(message: types.Message, state: FSMContext):
         await message.answer(text='Пользователь заблокирован', reply_markup=start_markup)
         user = (await state.get_data()).get('user')
         date_time = datetime.now() + timedelta(hours=time_zone)
+        num_id = await commands_update.show_id() + 1
         await commands_user.update_user(user_id=user.user_id, blocking=1, last_edit=date_time)
-        await commands_update.add_update(user_id=user.user_id, old_status=user.blocking, new_status=1,
+        await commands_update.add_update(num_id=num_id, user_id=user.user_id, old_status=user.blocking, new_status=1,
                                          admin_id=message.from_user.id, date_time=date_time)
         await state.finish()
         await Starting.choose.set()
